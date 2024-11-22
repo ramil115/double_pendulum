@@ -46,7 +46,7 @@ simulator = Simulator(plant=plant)
 # learning environment parameters
 state_representation = 2
 obs_space = obs_space = gym.spaces.Box(
-    np.array([-1.0, -1.0, -1.0, -1.0]), np.array([1.0, 1.0, 1.0, 1.0])
+    np.array([-1.0, -1.0, -1.0, -1.0]), np.array([1.0, 1.0, 1.0, 1.0]), dtype = np.float64
 )
 act_space = gym.spaces.Box(np.array([-1]), np.array([1]))
 max_steps = 100
@@ -79,7 +79,7 @@ def noisy_reset_func():
     rand = np.random.rand(4) * 0.01
     rand[2:] = rand[2:] - 0.05
     observation = [-1.0, -1.0, 0.0, 0.0] + rand
-    return np.float32(observation)
+    return np.float64(observation)
 
 
 env = CustomEnv(
@@ -100,17 +100,17 @@ print("StableBaselines3 env_check successful.")
 gymnasium_check_env(env, skip_render_check=True)
 print("Gymnasium env_check successful.")
 
-# # vectorized environment
-# envs = make_vec_env(
-#     env_id=CustomEnv,
-#     n_envs=3,
-#     env_kwargs={
-#         "dynamics_func": dynamics_func,
-#         "reward_func": reward_func,
-#         "terminated_func": terminated_func,
-#         "reset_func": noisy_reset_func,
-#         "obs_space": obs_space,
-#         "act_space": act_space,
-#         "max_episode_steps": max_steps,
-#     },
-# )
+# vectorized environment
+envs = make_vec_env(
+    env_id=CustomEnv,
+    n_envs=3,
+    env_kwargs={
+        "dynamics_func": dynamics_func,
+        "reward_func": reward_func,
+        "terminated_func": terminated_func,
+        "reset_func": noisy_reset_func,
+        "obs_space": obs_space,
+        "act_space": act_space,
+        "max_episode_steps": max_steps,
+    },
+)
